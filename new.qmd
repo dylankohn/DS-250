@@ -4,29 +4,34 @@ format: html
 ---
 
 ```{python}
+# %%
+# Read in libraries
 import pandas as pd
 import numpy as np
 from lets_plot import *
-
 LetsPlot.setup_html(isolated_frame=True)
-```
+url = 'https://github.com/fivethirtyeight/data/raw/master/star-wars-survey/StarWars.csv'
 
-```{python}
-df = pd.read_csv("https://byui-cse.github.io/cse110-course/lesson11/life-expectancy.csv")
+df = pd.read_csv(url, encoding='latin1', skiprows=[1])
 
-print(df)
-```
+# Filter for male respondents
+# The "Gender" column is one of the demographic columns; based on the screenshot, it's labeled "Gender"
+male_df = df[df['Gender'] == 'Male']
 
-```{python}
-df.query('Entity == "France" ')
-```
+# The columns for "Have you seen..." are columns 2-7 (Episodes I-VI), indices 1:7 in pandas
+seen_columns = df.columns[1:7]
 
+# Count male respondents who have seen at least one movie
+# Replace NaN with False and movie titles with True, then check if any True per row
+seen_any_male = male_df[seen_columns].notna().any(axis=1)
 
-```{python}
-usa2 = df.query('Year > 1920 & Year <=2000')
-{
-    ggplot(data = usa2,
-            mapping = aes(x = "Year", y = "Life")) +
-            geom_line()
-}
+# Calculate percentage
+total_males = len(male_df)
+seen_at_least_one_male = seen_any_male.sum()
+percentage_males = (seen_at_least_one_male / total_males) * 100
+
+# Print result to 3 decimal places
+print(f"Total male respondents: {total_males}")
+print(f"Males who have seen at least one film: {seen_at_least_one_male}")
+print(f"Percentage of males who have seen at least one film: {percentage_males:.3f}%")
 ```

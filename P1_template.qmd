@@ -107,13 +107,20 @@ After the year 1975 the use of these names significantly decreased.
 
 ```{python}
 # Include and execute your code here
-names = ["Mary", "Martha", "Peter", "Paul"]
-df_filtered = df[(df["name"].isin(names)) & (df["year"] >= 1920) & (df["year"] <= 2000)]
 
-p = (ggplot(df_filtered) +
+# Array to store names
+names = ["Mary", "Martha", "Peter", "Paul"]
+
+# Filter the dataframe
+df_filtered = df.query('name in @names and year >= 1920 and year <= 2000')
+
+# Set up the graph
+LetsPlot.setup_html()
+p = (ggplot(data=df_filtered) +
      geom_line(aes(x='year', y='Total', color='name')) +
      ggtitle("Usage of Christian Names (Mary, Martha, Peter, Paul) Over Time") +
-     xlab("Year") + ylab("Number of Babies Named") +  
+     xlab("Year") +
+     ylab("Number of Babies Named") +
      ggsize(400, 200))
 
 p.show()
@@ -129,19 +136,26 @@ The use of the name Maverick slightly went up after the release of the movie but
 
 ```{python}
 # Include and execute your code here
+
+# Define variables
 movie_name = "Maverick"
 movie_release_year = 1986
 
-df_name = df[df["name"] == movie_name]
+# Filter the dataframe using the query function
+df_filtered = df.query('name == @movie_name')
 
-p = (ggplot(df_name) +
+# Set up the graph
+LetsPlot.setup_html()
+p = (ggplot(data=df_filtered) +
      geom_line(aes(x='year', y='Total'), color='blue') +
-     geom_vline(xintercept=movie_release_year, linetype="dashed", color="red", label="hello") +
+     geom_vline(xintercept=movie_release_year, linetype="dashed", color="red") +
      ggtitle(f"Usage of the Name '{movie_name}' Over Time") +
-     xlab("Year") + ylab(f"Number of Babies Named {movie_name}") +
+     xlab("Year") +
+     ylab(f"Number of Babies Named {movie_name}") +
      ggsize(400, 200))
 
 p.show()
+
 
 ```
 
@@ -156,6 +170,38 @@ _type your results and analysis here_
 ```{python}
 # Include and execute your code here
 
+# Set the variables and define the years we want to look at
+name = "Elliot"
+release_years = [1982, 1985, 2002]
+release_labels = ["E.T Released", "Second Release", "Third Release"]
+
+# Filter the dataframe using the query function
+df_filtered = df.query('name == @name and year >= 1950')
+
+# Set up the graph
+LetsPlot.setup_html()
+
+# Add the annotation marks
+annotations = pd.DataFrame({
+    'year': release_years,
+    'label': release_labels,
+    'y': [df_filtered["Total"].max() * 0.9] * len(release_years)
+})
+
+# Chart the graph
+p = (ggplot(data=df_filtered) +
+     geom_line(aes(x='year', y='Total', color='name'), size=1.2, alpha=0.7) +
+     geom_vline(xintercept=release_years, linetype="dashed", color="red") +
+     geom_text(aes(x='year', y='y', label='label'),
+               data=annotations,
+               angle=0, vjust=-0.5, hjust=0.5, size=10) +
+     ggtitle("Elliot") +
+     xlab("year") +
+     ylab("Total") +
+     ggsize(800, 400))
+
+# Show the graph
+p.show()
 
 ```
 

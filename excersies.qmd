@@ -1,0 +1,32 @@
+```{python}
+# Read in libraries
+import pandas as pd
+import numpy as np
+from lets_plot import *
+LetsPlot.setup_html(isolated_frame=True)
+# read in df
+url = 'https://raw.githubusercontent.com/byuidatascience/data4names/master/data-raw/names_year/names_year.csv'
+df = pd.read_csv(url)
+print(df.head())
+```
+
+```{python}
+df_oliver_utah = df.query("name == 'Oliver'")
+
+
+total_olivers_utah = df_oliver_utah['UT'].sum()
+print(f"Total Olivers born in Utah (all years): {total_olivers_utah}")
+```
+
+```{python}
+df_felisha = df.query("name == 'Felisha'")
+
+# Find rows where at least one state column has a nonzero count
+state_cols = df.columns[2:]  # skip 'name' and 'year'
+df_felisha_nonzero = df_felisha[(df_felisha[state_cols] > 0).any(axis=1)]
+
+# Get the earliest year
+earliest_year = df_felisha_nonzero['year'].min()
+
+print(f"The earliest year the name Felisha was used: {int(earliest_year)}")
+```

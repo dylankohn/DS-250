@@ -1,7 +1,7 @@
 ---
 title: "Client Report - Finding Relationships in Baseball"
 subtitle: "Course DS 250"
-author: "[STUDENT NAME]"
+author: "Dylan Kohn"
 format:
   html:
     self-contained: true
@@ -42,7 +42,6 @@ LetsPlot.setup_html(isolated_frame=True)
 sqlite_file = 'lahmansbaseballdb.sqlite'
 # this file must be in the same location as your .qmd or .py file
 con = sqlite3.connect(sqlite_file)
-
 ```
 
 ## QUESTION|TASK 1
@@ -51,7 +50,7 @@ __Write an SQL query to create a new dataframe about baseball players who attend
 
 
 ```{python}
-query_task1 = """
+query = """
 SELECT people.playerID, collegeplaying.schoolID, salaries.salary, salaries.yearID, salaries.teamID
 FROM people
 JOIN salaries ON people.playerID = salaries.playerID
@@ -60,8 +59,8 @@ JOIN schools ON collegeplaying.schoolID = schools.schoolID
 WHERE schools.schoolID = 'BYU-Idaho'
 ORDER BY salaries.salary DESC;
 """
-df_byu_idaho = pd.read_sql(query_task1, con)
-print(df_byu_idaho)
+df_byui = pd.read_sql(query, con)
+print(df_byui)
 ```
 
 
@@ -74,33 +73,33 @@ __This three-part question requires you to calculate batting average (number of 
 
 
 ```{python}
-query_task2a = """
-SELECT playerID, yearID, CAST(H AS FLOAT)/NULLIF(AB,0) AS batting_average
+query_T2a = """
+SELECT playerID, yearID, H/AB AS batting_average
 FROM batting
 WHERE AB >= 1
 ORDER BY batting_average DESC, playerID
 LIMIT 5;
 """
-df_batting_avg_a = pd.read_sql(query_task2a, con)
-print(df_batting_avg_a)
+df_batting_avg_1 = pd.read_sql(query_T2a, con)
+print(df_batting_avg_1)
 ```
 
 
 ```{python}
-query_task2b = """
+query_T2b = """
 SELECT playerID, yearID, CAST(H AS FLOAT)/NULLIF(AB,0) AS batting_average
 FROM batting
 WHERE AB >= 10
 ORDER BY batting_average DESC, playerID
 LIMIT 5;
 """
-df_batting_avg_b = pd.read_sql(query_task2b, con)
-print(df_batting_avg_b)
+df_batting_avg_2 = pd.read_sql(query_T2b, con)
+print(df_batting_avg_2)
 ```
 
 
 ```{python}
-query_task2c = """
+query_T2c = """
 SELECT playerID, CAST(SUM(H) AS FLOAT)/NULLIF(SUM(AB),0) AS career_batting_average
 FROM batting
 GROUP BY playerID
@@ -108,8 +107,8 @@ HAVING SUM(AB) >= 100
 ORDER BY career_batting_average DESC
 LIMIT 5;
 """
-df_batting_avg_c = pd.read_sql(query_task2c, con)
-print(df_batting_avg_c)
+df_batting_avg_3 = pd.read_sql(query_T2c, con)
+print(df_batting_avg_3)
 ```
 
 
